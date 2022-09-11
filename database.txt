@@ -1,0 +1,263 @@
+DROP DATABASE AJIO;
+CREATE DATABASE AJIO;
+USE AJIO;
+
+CREATE TABLE user
+(
+user_id VARCHAR(255) PRIMARY KEY,
+password VARCHAR(50) NOT NULL,
+name VARCHAR(255) NOT NULL
+);
+CREATE TABLE user_details(
+contact_number BIGINT(20) PRIMARY KEY,
+user_id VARCHAR(255),
+address VARCHAR(255) NOT NULL,
+city VARCHAR(50) NOT NULL,
+state VARCHAR(50) NOT NULL,
+pin INTEGER(11) NOT NULL,
+available INTEGER DEFAULT 0,
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+CREATE TABLE card_info(
+card_id BIGINT(20) PRIMARY KEY,
+user_id VARCHAR(255) NOT NULL,
+card_number BIGINT(16) NOT NULL,
+expiry_date DATE NOT NULL,
+cvv INTEGER(3) NOT NULL,
+available INTEGER DEFAULT 0,
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+CREATE TABLE seller(
+seller_id VARCHAR(255) PRIMARY KEY,
+brand_name VARCHAR(255) NOT NULL,
+about_company VARCHAR(255),
+sale_last_month INTEGER
+);
+CREATE TABLE delivery(
+delivery_id INTEGER PRIMARY KEY,
+deliveryboy_name VARCHAR(255) NOT NULL,
+deliveryboy_phone BIGINT NOT NULL,
+deliveryboy_email VARCHAR(255) NOT NULL
+);
+CREATE TABLE category(
+category_id INTEGER(30) PRIMARY KEY,
+category_name VARCHAR(255) NOT NULL
+);
+CREATE TABLE product(
+product_id INTEGER PRIMARY KEY,
+product_name VARCHAR(255) NOT NULL,
+seller_id VARCHAR(255) NOT NULL,
+price DECIMAL(10,2) NOT NULL,
+rating DECIMAL(2,1),
+category_id INTEGER,
+description VARCHAR(255),
+discount_percent DECIMAL(4,2),
+color VARCHAR(30),
+in_stock INTEGER,
+delivery_id INTEGER,
+FOREIGN KEY (seller_id) REFERENCES seller(seller_id) ON DELETE CASCADE,
+FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE,
+FOREIGN KEY (delivery_id) REFERENCES delivery(delivery_id) ON DELETE CASCADE
+);
+CREATE TABLE product_image(
+product_id INTEGER,
+image_url VARCHAR(255),
+PRIMARY KEY(product_id,image_url),
+FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
+);
+CREATE TABLE shopping_cart(
+user_id VARCHAR(255),
+adding_date DATE,
+product_id INTEGER,
+quantity INTEGER,
+PRIMARY KEY(product_id,user_id),
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
+);
+CREATE TABLE wishlist(
+user_id VARCHAR(255),
+adding_date DATE,
+product_id INTEGER,
+PRIMARY KEY(product_id,user_id),
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
+);
+CREATE TABLE AJIO_order(
+order_id INTEGER PRIMARY KEY,
+user_id VARCHAR(255) NOT NULL,
+card_id BIGINT(20) NOT NULL,
+total_price DECIMAL(10,2),
+order_date DATE,
+address VARCHAR(255),
+quantity INTEGER NOT NULL,
+contact_number BIGINT(20) NOT NULL,
+delivery_date DATE,
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+FOREIGN KEY (card_id) REFERENCES card_info(card_id) ON DELETE CASCADE,
+FOREIGN KEY (contact_number) REFERENCES user_details(contact_number) ON DELETE CASCADE
+);
+CREATE TABLE review(
+review_id INTEGER PRIMARY KEY,
+product_id INTEGER NOT NULL,
+user_id VARCHAR(255) NOT NULL,
+review VARCHAR(1000),
+rating DECIMAL(2,1),
+date_of_review DATE,
+FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
+);
+CREATE TABLE review_image(
+review_id INTEGER,
+image_url VARCHAR(255),
+PRIMARY KEY(review_id,image_url),
+FOREIGN KEY (review_id) REFERENCES review(review_id) ON DELETE CASCADE
+);
+INSERT INTO user VALUES("a1334","123ythjk67","Anurag");
+INSERT INTO user VALUES("b1334","123ythjgh","naman");
+INSERT INTO user VALUES("c1334","123ythtyu","mohit");
+INSERT INTO user VALUES("d1334","123ytght","Arihant");
+INSERT INTO user VALUES("e1334","123yt6677","Akshat");
+INSERT INTO user VALUES("f1334","123yttfd","arjun");
+INSERT INTO user VALUES("g1334","123yuy76","Arundeep");
+INSERT INTO user VALUES("h1334","123y56uh","kusu");
+INSERT INTO user VALUES("i1334","123ythsty6","arunabh");
+INSERT INTO user VALUES("j1334","123ythrt45","harshit");
+
+INSERT INTO card_info VALUES(5678,"a1334",1235467890123456,"2020-04-05",322,0);
+INSERT INTO card_info VALUES(3547,"b1334",9237823826212864,"2018-07-30",876,0);
+INSERT INTO card_info VALUES(9323,"c1334",9237823826212864,"2019-12-04",654,0);
+INSERT INTO card_info VALUES(7361,"d1334",9237823826212864,"2015-11-21",902,0);
+INSERT INTO card_info VALUES(5349,"e1334",9237823826212864,"2022-01-12",132,0);
+INSERT INTO card_info VALUES(2837,"f1334",9237823826212864,"2019-09-09",429,0);
+INSERT INTO card_info VALUES(4834,"g1334",9237823826212864,"2020-03-20",972,0);
+INSERT INTO card_info VALUES(8273,"h1334",9237823826212864,"2018-06-15",342,0);
+INSERT INTO card_info VALUES(3483,"i1334",9237823826212864,"2021-02-16",736,0);
+INSERT INTO card_info VALUES(9324,"j1334",9237823826212864,"2021-09-14",916,0);
+
+INSERT INTO category VALUES(763927,"Men");
+INSERT INTO category VALUES(572371,"Women");
+INSERT INTO category VALUES(154343,"Shorts");
+INSERT INTO category VALUES(278643,"T-shirts");
+INSERT INTO category VALUES(545824,"Hoodie");
+INSERT INTO category VALUES(647343,"Jacket");
+INSERT INTO category VALUES(916366,"Lower");
+INSERT INTO category VALUES(643444,"Kids");
+INSERT INTO category VALUES(908583,"Kurti");
+INSERT INTO category VALUES(986124,"Suit");
+
+
+INSERT INTO delivery VALUES(90361,"Manish Phoole",8764592784,"manishphoole@gmail.com");
+INSERT INTO delivery VALUES(12533,"Jubin Nayak",8525335372,"jubinnayak@gmail.com");
+INSERT INTO delivery VALUES(61293,"Nikhil Jaiswal",732379291,"nikhiljaiswl@gmail.com");
+INSERT INTO delivery VALUES(23727,"Chappal Shinde",3227364624,"chappalshinde@gmail.com");
+INSERT INTO delivery VALUES(52716,"Lotera Gandhi",5216732713,"loteragandhi@gmail.com");
+INSERT INTO delivery VALUES(72832,"Subin Nayak",8326137511,"subinnayak@gmail.com");
+INSERT INTO delivery VALUES(72323,"Cooler Prasad",15327537253,"coolerprasad@gmail.com");
+INSERT INTO delivery VALUES(92839,"Apeksha Jadav",2663727327,"apekshajadav@gmail.com");
+INSERT INTO delivery VALUES(76237,"Punam Kale",6236328223,"punamkale@gmail.com");
+INSERT INTO delivery VALUES(92783,"Harshal Mehta",2138283623,"harshalmehta@gmail.com");
+
+INSERT INTO seller VALUES("xd657","HRX","We sell good quality clothes",154);
+INSERT INTO seller VALUES("xd658","Puma","Highest rated",1652);
+INSERT INTO seller VALUES("xd659","Addidas","Noone is like us",8723);
+INSERT INTO seller VALUES("xd660","Nike","Real products",821);
+INSERT INTO seller VALUES("xd661","USPA","We sell good quality clothes",8223);
+INSERT INTO seller VALUES("xd662","Roadster","High on emotion",9182);
+INSERT INTO seller VALUES("xd663","Campus","Sasta nhi sabse aacha",9220);
+INSERT INTO seller VALUES("xd664","Wrong","Everything is right",763);
+INSERT INTO seller VALUES("xd665","Notica","Cheap clothes",6123);
+INSERT INTO seller VALUES("xd666","Flying Machine","we are best",2736);
+
+INSERT INTO user_details VALUES(8745095086,"a1334","DD-92 Avantika","Ghaziabad","UP",201002,1);
+INSERT INTO user_details VALUES(8267894534,"b1334","IJ-93 C.P.","Delhi","Delhi",201002,1);
+INSERT INTO user_details VALUES(9145095456,"c1334","HJ-94 Thane","Bombay","Maharashtra",201002,1);
+INSERT INTO user_details VALUES(9345095342,"d1334","LK-95 VDN","Jaipur","Rajasthan",201002,1);
+INSERT INTO user_details VALUES(6745095564,"e1334","AL-96 Ajmer","Ajmer","Rajasthan",201002,1);
+INSERT INTO user_details VALUES(2045095876,"f1334","MK-97 Strecher Circle","Kota","Rajasthan",201002,1);
+INSERT INTO user_details VALUES(9645095765,"g1334","DD-98 MKL","Pune","Maharashtra",201002,1);
+INSERT INTO user_details VALUES(9945095112,"h1334","DD-99 Bhoukal","Nagpur","Maharashtra",201002,1);
+INSERT INTO user_details VALUES(7345095113,"i1334","DD-100 Surat","Surat","Gujarat",201002,1);
+INSERT INTO user_details VALUES(7945095123,"j1334","DD-101 Pondicherry","Chennai","Tamil Nadu",201002,1);
+
+INSERT INTO product VALUES(2644,"HRX Men's shirt","xd657",567.00,3.1,763927,"Best quality HRX Men's shirt",10.00,"red",1,90361);
+INSERT INTO product VALUES(9283,"Puma women shirt","xd658",783.00,4.2,572371,"Best quality women Puma women shirt",15.00,"blue",2,12533);
+INSERT INTO product VALUES(8216,"Addidas gymware shorts","xd659",973.00,3.9,154343,"Best quality Addidas gymware shorts",5.00,"green",5,61293);
+INSERT INTO product VALUES(4573,"Nike sweat T-shirt","xd660",590.00,4.3,763927,"Best quality sweat T-shirt by Nike",2.00,"yellow",3,23727);
+INSERT INTO product VALUES(5232,"USPA premium Hoodie","xd661",648.00,3.2,763927,"Best quality premium Hoodie by USPA",6.00,"purple",4,52716);
+INSERT INTO product VALUES(1638,"Roadster leather jacket","xd662",754.00,4.7,763927,"Best quality Roadster leather jacket",10.00,"white",2,72832);
+INSERT INTO product VALUES(9727,"Campus cotton lower","xd663",823.00,3.9,763927,"Best quality lower by campus",11.00,"parrot green",3,72323);
+INSERT INTO product VALUES(3923,"Wrong kids t-shirt","xd664",423.00,4.0,763927,"Best quality kids t-shirt by Wrong",20.00,"mahroon",3,92839);
+INSERT INTO product VALUES(3279,"Notica designer kurti","xd665",898.00,4.8,763927,"Best quality designer kurti by Notica",50.00,"navy blue",2,76237);
+INSERT INTO product VALUES(8263,"Premium suit flying machine","xd666",345.00,3.8,763927,"Best premium quality suit by flying machine",70.00,"red",5,92783);
+
+INSERT INTO product_image VALUES(2644,"www.stylemfh.com");
+INSERT INTO product_image VALUES(9283,"www.unsplash.com");
+INSERT INTO product_image VALUES(8216,"www.healthify.com");
+INSERT INTO product_image VALUES(4573,"www.premium.com");
+INSERT INTO product_image VALUES(5232,"www.github.com");
+INSERT INTO product_image VALUES(1638,"www.localhosy.com");
+INSERT INTO product_image VALUES(9727,"www.spotify.com");
+INSERT INTO product_image VALUES(3923,"www.sjdgfew.com");
+INSERT INTO product_image VALUES(3279,"www.laprto.com");
+INSERT INTO product_image VALUES(8263,"www.AJIO.com");
+
+INSERT INTO shopping_cart VALUES("a1334","2019-09-21",2644,3);
+INSERT INTO shopping_cart VALUES("a1334","2019-05-02",9283,1);
+INSERT INTO shopping_cart VALUES("c1334","2018-05-22",8216,4);
+INSERT INTO shopping_cart VALUES("c1334","2018-05-12",4573,1);
+INSERT INTO shopping_cart VALUES("d1334","2016-07-12",5232,5);
+INSERT INTO shopping_cart VALUES("d1334","2017-03-01",1638,1);
+INSERT INTO shopping_cart VALUES("g1334","2022-12-16",9727,1);
+INSERT INTO shopping_cart VALUES("j1334","2020-09-20",3923,3);
+INSERT INTO shopping_cart VALUES("j1334","2020-09-15",3279,2);
+INSERT INTO shopping_cart VALUES("j1334","2020-09-21",8263,8);
+
+INSERT INTO wishlist VALUES("a1334","2020-03-21",2644);
+INSERT INTO wishlist VALUES("a1334","2019-09-21",8216);
+INSERT INTO wishlist VALUES("a1334","2019-05-02",9283);
+INSERT INTO wishlist VALUES("c1334","2018-03-22",8216);
+INSERT INTO wishlist VALUES("c1334","2018-05-22",4573);
+INSERT INTO wishlist VALUES("d1334","2016-07-12",5232);
+INSERT INTO wishlist VALUES("d1334","2017-03-01",1638);
+INSERT INTO wishlist VALUES("g1334","2022-12-16",9727);
+INSERT INTO wishlist VALUES("j1334","2020-09-20",3923);
+INSERT INTO wishlist VALUES("j1334","2020-09-15",3279);
+INSERT INTO wishlist VALUES("j1334","2020-09-21",8263);
+
+INSERT INTO AJIO_order VALUES(36547,"a1334",5678,3445.00,"2021-05-12","DD-92 Avantika",3,8745095086,"2021-05-17");
+INSERT INTO AJIO_order VALUES(47532,"c1334",9323,983.00,"2021-01-09","HJ-94 Thane",4,9145095456,"2021-01-10");
+INSERT INTO AJIO_order VALUES(91237,"d1334",7361,1234.00,"2019-04-10","LK-95 VDN",5,9345095342,"2019-04-17");
+INSERT INTO AJIO_order VALUES(17325,"i1334",3483,6745.00,"2020-12-05","DD-100 Surat",3,7345095113,"2020-12-07");
+INSERT INTO AJIO_order VALUES(12357,"f1334",2837,8915.00,"2021-09-12","MK-97 Strecher Circle",2,2045095876,"2021-09-18");
+
+INSERT INTO review VALUES(675,2644,"a1334","Very nice cloth",4.5,"2019-03-18");
+INSERT INTO review VALUES(264,4573,"a1334","Value for money",4.5,"2021-01-10");
+INSERT INTO review VALUES(928,1638,"b1334","Worth buying",4.9,"2021-09-12");
+INSERT INTO review VALUES(821,9727,"b1334","Don't Buy",1.5,"2020-12-05");
+INSERT INTO review VALUES(457,3923,"j1334","Early delivery",3.5,"2020-03-20");
+INSERT INTO review VALUES(523,3279,"j1334","Nice packaging",4.0,"2019-04-10");
+INSERT INTO review VALUES(163,8263,"j1334","Cheap never buy",2.0,"2021-05-17");
+
+INSERT INTO review_image VALUES(675,"www.image.com");
+INSERT INTO review_image VALUES(264,"www.image1.com");
+INSERT INTO review_image VALUES(928,"www.image2.com");
+INSERT INTO review_image VALUES(821,"www.image3.com");
+INSERT INTO review_image VALUES(457,"www.image4.com");
+INSERT INTO review_image VALUES(523,"www.image5.com");
+INSERT INTO review_image VALUES(163,"www.image6.com");
+
+SELECT * FROM card_info;
+SELECT * FROM user;
+SELECT * FROM category;
+SELECT * FROM delivery;
+SELECT * FROM seller;
+SELECT * FROM user_details;
+SELECT * FROM product;
+SELECT * FROM product_image;
+SELECT * FROM shopping_cart;
+SELECT * FROM wishlist;
+SELECT * FROM AJIO_order;
+SELECT * FROM review;
+SELECT * FROM review_image;
+
+SELECT * FROM seller ORDER BY sale_last_month DESC LIMIT 100;
